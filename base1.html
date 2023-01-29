@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .clock{
+        position: fixed;
+        bottom: 30px;
+        right:30px;
+        }
+        .clock4{
+        position: absolute;
+        bottom: 60px;
+        left:30px;
+        }
+        .clock7{
+        display: None;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="startTime()">
+
+{% for i in range(5) %}
+{{ format_price("C://Users//1001t//PycharmProjects//project//templates//base.html") }}<br>
+{% endfor %}
+<br>
+{{ time }}
+<br>
+<div id="txt" class="clock"></div>
+<script>
+function startTime() {
+  const today = new Date();
+  let h = today.getHours();
+  let m = today.getMinutes();
+  let s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('txt').innerHTML =  h + ":" + m + ":" + s;
+  setTimeout(startTime, 1000);
+}
+
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+</script>
+
+<div id="txt5" class="clock4"></div>
+<div id="txt6" class="clock7"></div>
+<script>
+   function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   }
+   async function Tutor() {
+      document.write('Hello Toturix');
+      for (let i = 1; i <20 ; i++) {
+         //document.getElementById('txt6').innerHTML={{ format_price2("C://Users//1001t//PycharmProjects//project//data.txt")|safe }};
+         await sleep(3000);
+         document.getElementById('txt5').innerHTML=document.getElementById('txt5').innerHTML+{{ format_price1("C://Users//1001t//PycharmProjects//project//data.txt")|safe }};
+      }
+   }
+   Tutor()
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<html>
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="plotly.min.js"></script>
+    
+    </head>
+    <body>
+    <div class="navbar"><span>Real-Time Chart with Plotly.js</span></div>
+    <div class="wrapper">
+
+        <div id="chart"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+        <script>
+            const socket = new WebSocket('ws://localhost:8765');
+
+// Connection opened
+socket.addEventListener('open', (event) => {
+    socket.send('Hello Server!');
+});
+
+// Listen for messages
+socket.addEventListener('message', (event) => {
+    console.log('Message from server ', event.data);
+});
+            function getData() {
+                
+   
+                return Math.random();
+            }  
+
+            Plotly.newPlot('chart',[{
+                y:[getData()],
+                type:'line'
+            }]);
+            
+            var cnt = 0;
+
+            setInterval(function(){
+
+                Plotly.extendTraces('chart',{ y:[[getData()]]}, [0]);
+                cnt++;
+                if(cnt > 500) {
+                    Plotly.relayout('chart',{
+                        xaxis: {
+                            range: [cnt-500,cnt]
+                        }
+                    });
+                }
+            },15);
+        </script>
+    </div>
+    </body>
+</html>
