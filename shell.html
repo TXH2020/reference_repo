@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<title>HTML5 Websocket based Remote SSH Connector</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@4.19.0/css/xterm.css" />
+<script src="https://cdn.jsdelivr.net/npm/xterm@4.19.0/lib/xterm.js"></script>
+		<style>
+		</style>
+	</head>
+	<body>
+		<div id="shellArea"></div>
+	</body>
+	<script type="text/javascript">
+		// We define the shell Area
+		var term = new Terminal({
+			cols: 80,  // Set the terminal's width to 80 columns
+			rows: 24  // Set the terminal's height to 24 rows
+		});
+		var ssh_ready = false;
+		term.open(document.getElementById('shellArea'),true);
+		
+		var mainSocket = new WebSocket("ws://localhost:13254/"); // Change it to your server address
+		var mainDiv = document.getElementById('shellArea');
+		
+		mainSocket.onopen = function (event) {
+			// Hurray, we area ready for connection
+			console.log("Socket open success");
+			// This is the connection string that you need to invoke when the connection to our Python script is ready.
+			mainSocket.send(JSON.stringify({action: 'connect', host:"192.168.0.204",port:22,username:'kali',password:'kali'}));
+		};
+
+		mainSocket.onmessage = function (event) {
+			var msg = JSON.parse(event.data);
+			if(msg.action == "message"){
+				// handing the server message, we just write to xterm.js terminal
+				term.write(msg.message.toString());
+			} else if(msg.action == "connection"){
+				// verifying our connection
+				if(!msg.success) alert("Connection to server failed!!! Please verify credentials");
+				ssh_ready = msg.success;
+			}
+		}
+		
+		mainSocket.onclose = function (event) {
+			console.log("Socket closed");
+			ssh_ready = false; 
+		}
+		var command='';
+		term.onData(e => {
+        switch (e) {
+            case '\u0003': // Ctrl+C		
+                term.write('^C');
+                mainSocket.send(JSON.stringify({"action":"data","command":'^C'}));
+                prompt(term);
+                break;
+            case '\r': // Enter
+                runCommand(term, command);
+                command = '';
+                break;
+            case '\u007F': // Backspace (DEL)
+                // Do not delete the prompt
+                if (term._core.buffer.x > 2) {
+                    term.write('\b \b');
+                    if (command.length > 0) {
+                        command = command.substr(0, command.length - 1);
+                    }
+                }
+                break;
+            case '\u0009':
+                console.log('tabbed', output, ["dd", "ls"]);
+                break;
+            default:
+                if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
+                    command += e;
+                    term.write(e);
+                }
+        }
+    });
+
+function clearInput(command) {
+    var inputLengh = command.length;
+    for (var i = 0; i < inputLengh; i++) {
+        term.write('\b \b');
+    }
+}
+function prompt(term) {
+    command = '';
+    term.write('\r\n$ ');
+}
+mainSocket.onmessage = (event) => {
+    term.write(event.data);
+}
+
+function runCommand(term, command) {
+    if (command.length > 0) {
+        clearInput(command);
+        mainSocket.send(JSON.stringify({"action":"data","command":command+"\n"}));
+        return;
+    }
+}
+		
+	</script>
+
+</html>
