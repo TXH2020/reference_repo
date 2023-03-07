@@ -1,0 +1,24 @@
+<html>
+<body>
+<script src='/static/js/jquery.min.js'></script>
+<script src="/static/js/test.js"></script>
+<button id="b1" onclick='something()' style="color:green;background-color:red;">Click me</button>
+<button id="b2" style="color:green;background-color:yellow;">Click me</button>
+</body>
+<script>
+function something(){
+document.getElementById('b2').click();
+}
+</script>
+</html>
+
+<!--
+//test.js
+let person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
+var jQuery;
+jQuery(function($){
+$("#b2").click(function(){
+console.log('hi');
+});
+});
+-->
