@@ -1,0 +1,54 @@
+<!--
+<html>
+<body>
+<iframe src="http://localhost:8888" style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></iframe>
+</body>
+</html>
+-->
+<!--
+<html>
+<body>
+<object data="http://localhost:2222/ssh/host/127.0.0.1"
+width="400"
+height="300"
+type="text/html">
+    Alternative Content
+</object>
+</body>
+</html>
+
+<html>
+<body>
+<embed src="http://localhost:2222/ssh/host/127.0.0.1" width=100% height=100%></embed>
+</body>
+</html>
+
+<html>
+<body>
+<iframe src="http://localhost:2222/ssh/host/127.0.0.1" style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></iframe>
+</body>
+</html>
+
+<html><body>
+<script>
+// Create WebSocket connection.
+const socket = new WebSocket('ws://localhost:2222');
+
+// Connection opened
+socket.addEventListener('open', (event) => {
+    socket.send('Hello Server!');
+});
+
+// Listen for messages
+socket.addEventListener('message', (event) => {
+    console.log('Message from server ', event.data);
+});
+</script>
+</html></body>
+
+<html>
+<body>
+<iframe src="https://localhost:4200" style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></iframe>
+</body>
+</html>
+-->
